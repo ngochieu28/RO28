@@ -1,5 +1,5 @@
 -- xóa database nếu tồn tại
-Drop DATABASE testing_system_assigment_1;
+Drop DATABASE IF EXISTS Testing_System_Assigment_1;
 
 -- tạo database
 CREATE DATABASE Testing_System_Assigment_1;
@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS `Position`;
 -- tạo bảng `Position`
 CREATE TABLE `Position`(
 	PositionID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    PositionName VARCHAR(30) NOT NULL UNIQUE KEY
+    PositionName ENUM('Dev','Test','Scrum','Mater','PM') NOT NULL UNIQUE KEY
 );
 
 -- xóa bảng `Account` nếu có

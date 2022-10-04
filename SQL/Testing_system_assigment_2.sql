@@ -1,239 +1,253 @@
--- xóa database nếu tồn tại
-Drop DATABASE Testing_system_assigment_2;
+-- Xóa database nếu tồn tại
+Drop DATABASE IF EXISTS Testing_System_Assigment_1;
 
--- tạo database
-CREATE DATABASE Testing_System_Assigment_2;
+-- Tạo database
+CREATE DATABASE Testing_System_Assigment_1;
 
--- sử dụng database vừa tạo
-USE Testing_System_Assigment_2;
+-- Sử dụng database vừa tạo
+USE Testing_System_Assigment_1;
 
--- xóa bảng `Department` nếu có
+-- Xóa bảng `Department` nếu có
 DROP TABLE IF EXISTS `Department`;
--- tạo bảng Department
+-- Tạo bảng Department
 CREATE TABLE `Department`(
 	DepartmentID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    DepartmentName VARCHAR(30) NOT NULL UNIQUE KEY
+    DepartmentName VARCHAR(50) NOT NULL UNIQUE KEY
 );
   
--- xóa bảng `Position` nếu có
+-- Xóa bảng `Position` nếu có
 DROP TABLE IF EXISTS `Position`;
--- tạo bảng `Position`
+-- Tạo bảng `Position`
 CREATE TABLE `Position`(
 	PositionID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    PositionName ENUM('Dev','Test','Scrum','Mater','PM') NOT NULL UNIQUE KEY
+    PositionName ENUM('Dev','Test','Scrum Master','PM') NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `Account` nếu có
+-- Xóa bảng `Account` nếu có
 DROP TABLE IF EXISTS `Account`;
--- tạo bảng `Account`
+-- Tạo bảng `Account`
 CREATE TABLE `Account`(
 	AccountID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Email Varchar(30),
-    Usename VARCHAR(30),
-    FullName VARCHAR(30) NOT NULL,
+    Email Varchar(255) NOT NULL UNIQUE KEY,
+    Usename VARCHAR(50) NOT NULL UNIQUE KEY,
+    FullName VARCHAR(50) NOT NULL,
     DepartmentID TINYINT UNSIGNED NOT NULL,
     PositionID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (DepartmentID) REFERENCES `Department`(DepartmentID),
     FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID)
 );
 
--- xóa bảng `Group` nếu có
+-- Xóa bảng `Group` nếu có
 DROP TABLE IF EXISTS `Group`;
--- tạo bảng `Group`
+-- Tạo bảng `Group`
 CREATE TABLE `Group`(
 	GroupID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    GroupName VARCHAR(30) NOT NULL,
+    GroupName VARCHAR(30) NOT NULL UNIQUE KEY,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE
+    CreateDate DATETIME DEFAULT NOW()
 );
     
--- xóa bảng `GroupAccount` nếu có
+-- Xóa bảng `GroupAccount` nếu có
 DROP TABLE IF EXISTS `GroupAccount`;
--- tạo bảng `GroupAccount`
+-- Tạo bảng `GroupAccount`
 CREATE TABLE `GroupAccount`(
 	GroupID TINYINT UNSIGNED,
     AccountID TINYINT UNSIGNED NOT NULL,
-    JoinDate DATE,
+    JoinDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID),
     FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID)
 );
 
--- xóa bảng `TypeQuestion` nếu có
+-- Xóa bảng `TypeQuestion` nếu có
 DROP TABLE IF EXISTS `TypeQuestion`;
--- tạo bảng `TypeQuestion`   
+-- Tạo bảng `TypeQuestion`   
 CREATE TABLE `TypeQuestion`(
 	TypeID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    TypeName VARCHAR(30) NOT NULL
+    TypeName VARCHAR(50) NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `CategoryQuestion` nếu có
+-- Xóa bảng `CategoryQuestion` nếu có
 DROP TABLE IF EXISTS `CategoryQuestion`;
--- tạo bảng `CategoryQuestion`      
+-- Tạo bảng `CategoryQuestion`      
 CREATE TABLE `CategoryQuestion`(
 	CategoryID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(30) NOT NULL
+    CategoryName VARCHAR(30) NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `Question` nếu có
+-- Xóa bảng `Question` nếu có
 DROP TABLE IF EXISTS `Question`;
--- tạo bảng `Question`   
+-- Tạo bảng `Question`   
 CREATE TABLE `Question`(
 	QuestionID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Content VARCHAR(100),
+    Content VARCHAR(255) NOT NULL UNIQUE KEY,
     CategoryID TINYINT UNSIGNED NOT NULL,
     TypeID TINYINT UNSIGNED NOT NULL,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    CreatorDate DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (CategoryID) REFERENCES `CategoryQuestion`(CategoryID),
     FOREIGN KEY (TypeID) REFERENCES `TypeQuestion`(TypeID)
 );
 
--- xóa bảng `Answer` nếu có
+-- Xóa bảng `Answer` nếu có
 DROP TABLE IF EXISTS `Answer`;
--- tạo bảng `Answer`  
+-- Tạo bảng `Answer`  
 CREATE TABLE `Answer`(
 	AnswerID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Content VARCHAR(100),
+    Content VARCHAR(255) NOT NULL UNIQUE KEY,
     QuestionID TINYINT UNSIGNED NOT NULL,
     isCorrect BOOLEAN,
     FOREIGN KEY (QuestionID) REFERENCES `Question`(QuestionID)
 );
 
--- xóa bảng `Exam` nếu có 
+-- Xóa bảng `Exam` nếu có 
 DROP TABLE IF EXISTS `Exam`;
--- tạo bảng `Exam` 
+-- Tạo bảng `Exam` 
 CREATE TABLE `Exam`(
 	ExamID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Code1 VARCHAR(30) NOT NULL,
-    Title VARCHAR(100) NOT NULL,
+    Code VARCHAR(255) NOT NULL UNIQUE KEY,
+    Title VARCHAR(255) NOT NULL UNIQUE KEY,
 	CategoryID TINYINT UNSIGNED NOT NULL,
-    Duration TIME,
+    Duration TINYINT UNSIGNED NOT NULL,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (CategoryID) REFERENCES `CategoryQuestion`(CategoryID)
 );
 
--- xóa bảng `ExamQuestion` nếu có
+-- Xóa bảng `ExamQuestion` nếu có
 DROP TABLE IF EXISTS `ExamQuestion`;
--- tạo bảng `ExamQuestion`
+-- Tạo bảng `ExamQuestion`
 CREATE TABLE `ExamQuestion`(
 	ExamID VARCHAR(10) PRIMARY KEY,
     QuestionID TINYINT UNSIGNED NOT NULL,
     FOREIGN KEY (QuestionID) REFERENCES `Question`(QuestionID)
 );
 
--- thêm dữ liệu cho bảng `Department`   
-INSERT INTO `Department` (DepartmentName)
+-- Thêm dữ liệu vào các bảng
+INSERT INTO `Department`(DepartmentName)
 VALUES  ('Marketing'),
 		('Sale'),
-        ('IT'),
-        ('HR'),
-        ('Accounting');
-
--- thêm dữ liệu cho bảng `Position`          
-INSERT INTO `Position` ( PositionName)
+		('Bảo vệ'),
+		('Nhân sự'),
+		('Kỹ thuật'),
+		('Tài chính'),
+		('Phó giám đốc'),
+		('Giám đốc'),
+		('Thư kí'),
+		('No person'),
+		('Bán hàng');
+        
+INSERT INTO `Position`(PositionName)
 VALUES  ('Dev'),
 		('Test'),
-        ('Mater'),
-        ('PM');
+		('Scrum Master'),
+		('PM');
+        
+INSERT INTO `Account`(Email,Usename,FullName,DepartmentID,PositionID,CreateDate)
+VALUES  ('Email1@gmail.com','Username1','Fullname1',5,1,'2020-03-05'),
+		('Email2@gmail.com','Username2','Fullname2',1,2,'2020-03-05'),
+		('Email3@gmail.com','Username3','Fullname3',2,2,'2020-03-07'),
+		('Email4@gmail.com','Username4','Fullname4',3,4,'2020-03-08'),
+		('Email5@gmail.com','Username5','Fullname5',4,4,'2020-03-10'),
+		('Email6@gmail.com','Username6','Fullname6',6,3,'2020-04-05'),
+		('Email7@gmail.com','Username7','Fullname7',2,2,NULL),
+		('Email8@gmail.com','Username8','Fullname8',8,1,'2020-04-07'),
+		('Email9@gmail.com','Username9','Fullname9',2,2,'2020-04-07'),
+		('Email10@gmail.com','Username10','Fullname10',10,1,'2020-04-09'),
+		('Email11@gmail.com','Username11','Fullname11',10,1,DEFAULT),
+		('Email12@gmail.com','Username12','Fullname12',10,1,DEFAULT),
+        ('Email13@gmail.com','Username13','Dhbfhao',10,1,DEFAULT);
+        
+INSERT INTO `Group`(GroupName, CreatorID, CreateDate)
+VALUES  ('Testing System', 5, '2019-03-05'),
+		('Development', 1, '2020-03-07'),
+		('VTI Sale 01', 2, '2020-03-09'),
+		('VTI Sale 02', 3, '2020-03-10'),
+		('VTI Sale 03', 4, '2020-03-28'),
+		('VTI Creator', 6, '2020-04-06'),
+		('VTI Marketing 01', 7, '2020-04-07'),
+		('Management', 8, '2020-04-08'),
+		('Chat with love', 9, '2020-04-09'),
+		('Vi Ti Ai', 10, '2020-04-10');
+        
+INSERT INTO `GroupAccount`(GroupID, AccountID, JoinDate)
+VALUES  (1, 1, '2019-03-05'),
+		(1, 2, '2020-03-07'),
+		(3, 3, '2020-03-09'),
+		(3, 4, '2020-03-10'),
+		(5, 5, '2020-03-28'),
+		(1, 3, '2020-04-06'),
+		(1, 7, '2020-04-07'),
+		(8, 3, '2020-04-08'),
+		(1, 9, '2020-04-09'),
+		(10, 10, '2020-04-10');
+        
+INSERT INTO TypeQuestion(TypeName)
+VALUES  ('Essay'),
+		('Multiple-Choice');
+        
+INSERT INTO CategoryQuestion(CategoryName)
+VALUES ('Java'),
+    ('ASP.NET'),
+    ('ADO.NET'),
+    ('SQL'),
+    ('Postman'),
+    ('Ruby'),
+    ('Python'),
+    ('C++'),
+    ('C Sharp'),
+    ('PHP');
+    
+INSERT INTO Question(Content,CategoryID,TypeID,CreatorID,CreateDate)
+VALUES  ('Câu hỏi về Java', 1, '1', '2', '2020-04-05'),
+		('Câu Hỏi về PHP', 10, '2', '2', '2020-04-05'),
+		('Hỏi về C#', 9, '2', '3', '2020-04-06'),
+		('Hỏi về Ruby', 6, '1', '4', '2020-04-06'),
+		('Hỏi về Postman', 5, '1', '5', '2020-04-06'),
+		('Hỏi về ADO.NET', 3, '2', '6', '2020-04-06'),
+		('Hỏi về ASP.NET', 2, '1', '7', '2020-04-06'),
+		('Hỏi về C++', 8, '1', '8', '2020-04-07'),
+		('Hỏi về SQL', 4, '2', '9', '2020-04-07'),
+		('Hỏi về Python', 7, '1', '10', '2020-04-07');
+        
+INSERT INTO Answer(Content, QuestionID, isCorrect)
+VALUES  ('Trả lời 01', 1, 0),
+		('Trả lời 02', 1, 1),
+		('Trả lời 03', 1, 0),
+		('Trả lời 04', 1, 1),
+		('Trả lời 05', 2, 1),
+		('Trả lời 06', 3, 1),
+		('Trả lời 07', 4, 0),
+		('Trả lời 08', 8, 0),
+		('Trả lời 09', 9, 1),
+		('Trả lời 10', 10, 1);
+        
+INSERT INTO Exam (`Code`,Title,CategoryID,Duration,CreatorID,CreateDate)
+VALUES  ('VTIQ001','Đề thi C#',1,60,'5','2019-04-05'),
+		('VTIQ002','Đề thi PHP',10,60,'2','2019-04-05'),
+		('VTIQ003','Đề thi C++',9,120,'2','2019-04-07'),
+		('VTIQ004','Đề thi Java',6,60,'3','2020-04-08'),
+		('VTIQ005','Đề thi Ruby',5,120,'4','2020-04-10'),
+		('VTIQ006','Đề thi Postman',3,60,'6','2020-04-05'),
+		('VTIQ007','Đề thi SQL',2,60,'7','2020-04-05'),
+		('VTIQ008','Đề thi Python',8,60,'8','2020-04-07'),
+		('VTIQ009','Đề thi ADO.NET',4,90,'9','2020-04-07'),
+		('VTIQ010','Đề thi ASP.NET',7,90,'10','2020-04-08');
+    
+INSERT INTO ExamQuestion(ExamID, QuestionID)
+VALUES  (1, 5),
+		(2, 10),
+		(3, 4),
+		(4, 3),
+		(5, 7),
+		(6, 10),
+		(7, 2),
+		(8, 10),
+		(9, 9),
+		(10, 8);
+        
 
--- thêm dữ liệu cho bảng `Account`         
-INSERT INTO `Account` (Email,Usename,FullName,DepartmentID,PositionID,CreateDate)
-VALUES  ('Nv1@gmail.com','Nv1','NhanVien1','1','2','2011-1-1'),
-		('Nv2@gmail.com','Nv2','NhanVien2','3','4','2012-2-2'),
-        ('Nv3@gmail.com','Nv3','NhanVien3','1','3','2013-3-3'),
-        ('Nv4@gmail.com','Nv4','NhanVien4','2','4','2014-4-4'),
-        ('Nv5@gmail.com','Nv5','NhanVien5','1','4','2015-5-5'),
-        ('Nv6@gmail.com','Nv6','NhanVien6','2','3','2016-6-6'),
-        ('Nv7@gmail.com','Nv7','NhanVien7','5','1','2017-7-7'),
-        ('Nv8@gmail.com','Nv8','NhanVien8','5','2','2018-8-8'),
-        ('Nv9@gmail.com','Nv9','NhanVien9','5','3','2019-9-9'),
-        ('Nv10@gmail.com','Nv10','NhanVien10','5','4','2020-10-10');
-
--- thêm dữ liệu cho bảng `Group` 
-INSERT INTO `Group` (GroupName,CreatorID,CreateDate)
-VALUES  ('Group1','01','2011-1-1'),
-		('Group2','02','2012-2-2'),
-        ('Group3','03','2013-3-3'),
-        ('Group4','04','2014-4-4'),
-        ('Group5','05','2015-5-5');
-
--- thêm dữ liệu cho bảng `GroupAccount`          
-INSERT INTO `GroupAccount` (AccountID,JoinDate)
-VALUE   ('1','2011-1-1'),
-		('3','2013-3-3'),
-        ('2','2012-2-2'),
-        ('5','2015-5-5'),
-        ('7','2017-7-7'),
-        ('9','2019-9-9'),
-        ('2','2012-2-2'),
-        ('4','2014-4-4'),
-        ('6','2016-6-6'),
-        ('8','2018-8-8'),
-		('10','2020-10-10'),
-        ('4','2014-4-4');
--- thêm dữ liệu cho bảng `TypeQuestion`  
-INSERT INTO `TypeQuestion` (TypeName)
-VALUE   ('Type1'),
-		('Type2'),
-        ('Type3'),
-        ('Type4'),
-        ('Type5'),
-        ('Type6'),
-        ('Type7'),
-        ('Type8'),
-        ('Type9');
-
--- thêm dữ liệu cho bảng `CategoryQuestion`          
-INSERT INTO `CategoryQuestion` (CategoryName)
-VALUE   ('Category1'),
-		('Category2'),
-        ('Category3');
-
--- thêm dữ liệu cho bảng `Question`        
-INSERT INTO `Question` (Content,CreatorID,CategoryID,TypeID,CreatorDate)
-VALUES  ('Content1','01','1','2','2011-1-1'),
-		('Content2','02','2','5','2012-2-2'),
-        ('Content3','03','3','9','2013-3-3'),
-        ('Content4','04','2','8','2014-4-4'),
-        ('Content5','05','1','4','2015-5-5');
-
--- thêm dữ liệu cho bảng Answer`		
-INSERT INTO `Answer` (Content,QuestionID,isCorrect)
-VALUES  ('Answer1','1',1),
-		('Answer2','2',1),
-        ('Answer3','3',0),
-        ('Answer4','4',1),
-        ('Answer5','1',0),
-        ('Answer6','2',1),
-        ('Answer7','3',1),
-        ('Answer8','5',0),
-        ('Answer9','2',1),
-        ('Answer10','1',1),
-        ('Answer11','4',0);
-
--- thêm dữ liệu cho bảng `Exam`        
-INSERT INTO `Exam` (Code1,Title,CategoryID,Duration,CreatorID,CreateDate)
-VALUES  ('M01','Title1','1','19:30:00','01','2011-1-1'),
-		('M02','Title1','2','19:30:00','04','2011-1-1'),
-        ('M03','Title1','3','19:30:00','03','2011-1-1'),
-        ('M04','Title1','3','19:30:00','05','2011-1-1'),
-        ('M05','Title1','1','19:30:00','02','2011-1-1'),
-        ('M06','Title1','2','19:30:00','03','2011-1-1'),
-        ('M07','Title1','2','19:30:00','05','2011-1-1'),
-        ('M08','Title1','1','19:30:00','02','2011-1-1');
-
--- thêm dữ liệu cho bảng `ExamQuestion`
-INSERT INTO `ExamQuestion` (ExamID,QuestionID)
-VALUES  ('E1','1'),
-		('E2','4'),
-        ('E3','2'),
-        ('E4','4'),
-        ('A1','5'),
-        ('A2','2'),
-        ('A3','3'),
-        ('A4','1');
+        
 		
 		
 
