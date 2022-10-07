@@ -1,127 +1,124 @@
--- xóa database nếu tồn tại
+-- Xóa database nếu tồn tại
 Drop DATABASE IF EXISTS Testing_System_Assigment_1;
 
--- tạo database
+-- Tạo database
 CREATE DATABASE Testing_System_Assigment_1;
 
--- sử dụng database vừa tạo
+-- Sử dụng database vừa tạo
 USE Testing_System_Assigment_1;
 
--- xóa bảng `Department` nếu có
+-- Xóa bảng `Department` nếu có
 DROP TABLE IF EXISTS `Department`;
--- tạo bảng Department
+-- Tạo bảng Department
 CREATE TABLE `Department`(
 	DepartmentID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    DepartmentName VARCHAR(30) NOT NULL UNIQUE KEY
+    DepartmentName VARCHAR(50) NOT NULL UNIQUE KEY
 );
   
--- xóa bảng `Position` nếu có
+-- Xóa bảng `Position` nếu có
 DROP TABLE IF EXISTS `Position`;
--- tạo bảng `Position`
+-- Tạo bảng `Position`
 CREATE TABLE `Position`(
 	PositionID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    PositionName ENUM('Dev','Test','Scrum','Mater','PM') NOT NULL UNIQUE KEY
+    PositionName ENUM('Dev','Test','Scrum Master','PM') NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `Account` nếu có
+-- Xóa bảng `Account` nếu có
 DROP TABLE IF EXISTS `Account`;
--- tạo bảng `Account`
+-- Tạo bảng `Account`
 CREATE TABLE `Account`(
 	AccountID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Email Varchar(30),
-    Usename VARCHAR(30),
-    FullName VARCHAR(30) NOT NULL,
+    Email Varchar(255) NOT NULL UNIQUE KEY,
+    Usename VARCHAR(50) NOT NULL UNIQUE KEY,
+    FullName VARCHAR(50) NOT NULL,
     DepartmentID TINYINT UNSIGNED NOT NULL,
     PositionID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (DepartmentID) REFERENCES `Department`(DepartmentID),
     FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID)
 );
 
--- xóa bảng `Group` nếu có
+-- Xóa bảng `Group` nếu có
 DROP TABLE IF EXISTS `Group`;
--- tạo bảng `Group`
+-- Tạo bảng `Group`
 CREATE TABLE `Group`(
 	GroupID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    GroupName VARCHAR(30) NOT NULL,
+    GroupName VARCHAR(30) NOT NULL UNIQUE KEY,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE
+    CreateDate DATETIME DEFAULT NOW()
 );
     
--- xóa bảng `GroupAccount` nếu có
+-- Xóa bảng `GroupAccount` nếu có
 DROP TABLE IF EXISTS `GroupAccount`;
--- tạo bảng `GroupAccount`
+-- Tạo bảng `GroupAccount`
 CREATE TABLE `GroupAccount`(
 	GroupID TINYINT UNSIGNED,
-    AccountID VARCHAR(30) NOT NULL UNIQUE KEY,
-    JoinDate DATE
+    AccountID TINYINT UNSIGNED NOT NULL,
+    JoinDate DATETIME DEFAULT NOW(),
+    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID),
+    FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID)
 );
 
--- xóa bảng `TypeQuestion` nếu có
+-- Xóa bảng `TypeQuestion` nếu có
 DROP TABLE IF EXISTS `TypeQuestion`;
--- tạo bảng `TypeQuestion`   
+-- Tạo bảng `TypeQuestion`   
 CREATE TABLE `TypeQuestion`(
 	TypeID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    TypeName VARCHAR(30) NOT NULL
+    TypeName VARCHAR(50) NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `CategoryQuestion` nếu có
+-- Xóa bảng `CategoryQuestion` nếu có
 DROP TABLE IF EXISTS `CategoryQuestion`;
--- tạo bảng `CategoryQuestion`      
+-- Tạo bảng `CategoryQuestion`      
 CREATE TABLE `CategoryQuestion`(
 	CategoryID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(30) NOT NULL
+    CategoryName VARCHAR(30) NOT NULL UNIQUE KEY
 );
 
--- xóa bảng `Question` nếu có
+-- Xóa bảng `Question` nếu có
 DROP TABLE IF EXISTS `Question`;
--- tạo bảng `Question`   
+-- Tạo bảng `Question`   
 CREATE TABLE `Question`(
 	QuestionID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Content VARCHAR(100),
+    Content VARCHAR(255) NOT NULL UNIQUE KEY,
     CategoryID TINYINT UNSIGNED NOT NULL,
     TypeID TINYINT UNSIGNED NOT NULL,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    Creator DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (CategoryID) REFERENCES `CategoryQuestion`(CategoryID),
     FOREIGN KEY (TypeID) REFERENCES `TypeQuestion`(TypeID)
 );
 
--- xóa bảng `Answer` nếu có
+-- Xóa bảng `Answer` nếu có
 DROP TABLE IF EXISTS `Answer`;
--- tạo bảng `Answer`  
+-- Tạo bảng `Answer`  
 CREATE TABLE `Answer`(
 	AnswerID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Content VARCHAR(100),
+    Content VARCHAR(255) NOT NULL UNIQUE KEY,
     QuestionID TINYINT UNSIGNED NOT NULL,
     isCorrect BOOLEAN,
     FOREIGN KEY (QuestionID) REFERENCES `Question`(QuestionID)
 );
 
--- xóa bảng `Exam` nếu có 
+-- Xóa bảng `Exam` nếu có 
 DROP TABLE IF EXISTS `Exam`;
--- tạo bảng `Exam` 
+-- Tạo bảng `Exam` 
 CREATE TABLE `Exam`(
 	ExamID TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    Code1 VARCHAR(30) NOT NULL,
-    Title VARCHAR(100) NOT NULL,
+    Code VARCHAR(255) NOT NULL UNIQUE KEY,
+    Title VARCHAR(255) NOT NULL UNIQUE KEY,
 	CategoryID TINYINT UNSIGNED NOT NULL,
-    Duration TIME,
+    Duration TINYINT UNSIGNED NOT NULL,
     CreatorID TINYINT UNSIGNED NOT NULL,
-    CreateDate DATE,
+    CreateDate DATETIME DEFAULT NOW(),
     FOREIGN KEY (CategoryID) REFERENCES `CategoryQuestion`(CategoryID)
 );
 
--- xóa bảng `ExamQuestion` nếu có
+-- Xóa bảng `ExamQuestion` nếu có
 DROP TABLE IF EXISTS `ExamQuestion`;
--- tạo bảng `ExamQuestion`
+-- Tạo bảng `ExamQuestion`
 CREATE TABLE `ExamQuestion`(
-	ExamID TINYINT UNSIGNED PRIMARY KEY,
+	ExamID VARCHAR(10) PRIMARY KEY,
     QuestionID TINYINT UNSIGNED NOT NULL,
     FOREIGN KEY (QuestionID) REFERENCES `Question`(QuestionID)
 );
-    
-    
-
-    
-    
